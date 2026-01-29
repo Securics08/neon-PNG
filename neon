@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<title>Neon Jegyzet</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  body{
+    margin:0;
+    background:#0a0a0a;
+    color:#fff;
+    font-family:Arial, sans-serif;
+  }
+  .container{
+    display:flex;
+    height:100vh;
+  }
+  .sidebar{
+    width:60px;
+    background:#111;
+    padding:10px;
+    box-sizing:border-box;
+    overflow-y:auto;
+  }
+  .color-btn{
+    width:100%;
+    height:24px;
+    margin-bottom:6px;
+    border:none;
+    cursor:pointer;
+    outline:none;
+    border-radius:4px;
+    box-shadow:0 0 5px rgba(255,255,255,0.3);
+  }
+  .main{
+    flex:1;
+    padding:10px;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+  }
+  .toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:10px;
+    align-items:center;
+  }
+  .toolbar select, .toolbar input, .toolbar button{
+    padding:6px;
+    border-radius:4px;
+    border:1px solid #333;
+    background:#111;
+    color:#fff;
+    outline:none;
+  }
+  .editor{
+    flex:1;
+    background:#050505;
+    border:1px solid #333;
+    border-radius:6px;
+    padding:10px;
+    overflow-y:auto;
+    font-size:18px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+  .editor:focus{
+    outline:none;
+    border-color:#555;
+  }
+  .neon-orange{ color:#ff6600; text-shadow:0 0 5px #ff6600,0 0 10px #ff6600,0 0 15px #ff6600,0 0 20px #ff6600; }
+  .neon-yellow{ color:#ffff00; text-shadow:0 0 5px #ffff00,0 0 10px #ffff00,0 0 15px #ffff00,0 0 20px #ffff00; }
+  .neon-darkred{ color:#7a001f; text-shadow:0 0 5px #7a001f,0 0 10px #7a001f,0 0 15px #7a001f,0 0 20px #7a001f; }
+  .neon-cyan{ color:#00f6ff; text-shadow:0 0 5px #00f6ff,0 0 10px #00f6ff,0 0 15px #00f6ff,0 0 20px #00f6ff; }
+  .neon-blue{ color:#00aaff; text-shadow:0 0 5px #00aaff,0 0 10px #00aaff,0 0 15px #00aaff,0 0 20px #00aaff; }
+  .neon-deepblue{ color:#0080ff; text-shadow:0 0 5px #0080ff,0 0 10px #0080ff,0 0 15px #0080ff,0 0 20px #0080ff; }
+  .neon-magenta{ color:#ff00ff; text-shadow:0 0 5px #ff00ff,0 0 10px #ff00ff,0 0 15px #ff00ff,0 0 20px #ff00ff; }
+  .neon-pink{ color:#ff33ff; text-shadow:0 0 5px #ff33ff,0 0 10px #ff33ff,0 0 15px #ff33ff,0 0 20px #ff33ff; }
+  .neon-green{ color:#00ff00; text-shadow:0 0 5px #00ff00,0 0 10px #00ff00,0 0 15px #00ff00,0 0 20px #00ff00; }
+  .neon-lightgreen{ color:#00ff66; text-shadow:0 0 5px #00ff66,0 0 10px #00ff66,0 0 15px #00ff66,0 0 20px #00ff66; }
+  .neon-lime{ color:#33ff33; text-shadow:0 0 5px #33ff33,0 0 10px #33ff33,0 0 15px #33ff33,0 0 20px #33ff33; }
+  .neon-mint{ color:#00ff99; text-shadow:0 0 5px #00ff99,0 0 10px #00ff99,0 0 15px #00ff99,0 0 20px #00ff99; }
+  .neon-purple{ color:#8000ff; text-shadow:0 0 5px #8000ff,0 0 10px #8000ff,0 0 15px #8000ff,0 0 20px #8000ff; }
+  .neon-red{ color:#ff0000; text-shadow:0 0 5px #ff0000,0 0 10px #ff0000,0 0 15px #ff0000,0 0 20px #ff0000; }
+  .neon-white{ color:#ffffff; text-shadow:0 0 5px #ffffff,0 0 10px #ffffff,0 0 15px #ffffff,0 0 20px #ffffff; }
+  .editor a{ color:#00aaff; text-decoration: underline; cursor: pointer; }
+  .saved-panel{
+    width:300px;
+    background:#222;
+    padding:20px;
+    box-sizing:border-box;
+    overflow-y:auto;
+  }
+  .saved-panel h3{ color:#00f6ff; margin-top:0; }
+  .saved-item{ border-bottom:1px solid #333; padding:6px; cursor:pointer; }
+  .saved-item:hover{ background:#111; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="sidebar">
+    <div style="text-align:center;font-size:12px;margin-bottom:8px;">Neon<br>Színek</div>
+    <button class="color-btn" style="background:#ff6600" onclick="setActiveColor('neon-orange')"></button>
+    <button class="color-btn" style="background:#ffff00" onclick="setActiveColor('neon-yellow')"></button>
+    <button class="color-btn" style="background:#7a001f" onclick="setActiveColor('neon-darkred')"></button>
+    <button class="color-btn" style="background:#00f6ff" onclick="setActiveColor('neon-cyan')"></button>
+    <button class="color-btn" style="background:#00aaff" onclick="setActiveColor('neon-blue')"></button>
+    <button class="color-btn" style="background:#0080ff" onclick="setActiveColor('neon-deepblue')"></button>
+    <button class="color-btn" style="background:#ff00ff" onclick="setActiveColor('neon-magenta')"></button>
+    <button class="color-btn" style="background:#ff33ff" onclick="setActiveColor('neon-pink')"></button>
+    <button class="color-btn" style="background:#00ff00" onclick="setActiveColor('neon-green')"></button>
+    <button class="color-btn" style="background:#00ff66" onclick="setActiveColor('neon-lightgreen')"></button>
+    <button class="color-btn" style="background:#33ff33" onclick="setActiveColor('neon-lime')"></button>
+    <button class="color-btn" style="background:#00ff99" onclick="setActiveColor('neon-mint')"></button>
+    <button class="color-btn" style="background:#8000ff" onclick="setActiveColor('neon-purple')"></button>
+    <button class="color-btn" style="background:#ff0000" onclick="setActiveColor('neon-red')"></button>
+    <button class="color-btn" style="background:#ffffff" onclick="setActiveColor('neon-white')"></button>
+  </div>
+
+  <div class="main">
+    <div class="toolbar">
+      <label>Betűtípus:</label>
+      <select id="fontSelect" onchange="setFont()">
+        <option value="Arial">Arial (Alap)</option>
+        <option value="Courier New">Courier New (Írógép)</option>
+        <option value="Impact">Impact (Vastag)</option>
+        <option value="Georgia">Georgia (Elegáns)</option>
+        <option value="Comic Sans MS">Comic Sans (Játékos)</option>
+        <option value="Verdana">Verdana (Tiszta)</option>
+        <option value="Tahoma">Tahoma (Modern)</option>
+        <option value="Trebuchet MS">Trebuchet MS (Szép)</option>
+        <option value="Lucida Console">Lucida Console (Monospace)</option>
+        <option value="Lucida Sans">Lucida Sans (Klasszikus)</option>
+        <option value="Palatino Linotype">Palatino (Elegáns)</option>
+        <option value="Garamond">Garamond (Régi stílus)</option>
+        <option value="Bookman">Bookman (Klasszikus)</option>
+        <option value="Century Gothic">Century Gothic (Modern)</option>
+        <option value="Arial Black">Arial Black (Vastag)</option>
+        <option value="Brush Script MT">Brush Script (Kézírás)</option>
+        <option value="Segoe UI">Segoe UI (Windows)</option>
+        <option value="Roboto">Roboto (Modern)</option>
+        <option value="Open Sans">Open Sans (Letisztult)</option>
+        <option value="Lato">Lato (Modern)</option>
+        <option value="Montserrat">Montserrat (Modern)</option>
+        <option value="Oswald">Oswald (Erős)</option>
+        <option value="Poppins">Poppins (Letisztult)</option>
+        <option value="Playfair Display">Playfair Display (Elegáns)</option>
+        <option value="Pacifico">Pacifico (Kézírás)</option>
+        <option value="Great Vibes">Great Vibes (Kézírás)</option>
+        <option value="Orbitron">Orbitron (Sci-fi)</option>
+        <option value="Press Start 2P">Press Start 2P (Retro)</option>
+        <option value="Roboto Mono">Roboto Mono (Monospace)</option>
+      </select>
+
+      <label>Betűméret:</label>
+      <input type="range" id="sizeRange" min="8" max="100" value="18" oninput="setSize(this.value)">
+      <span id="sizeValue">18</span>px
+
+      <button onclick="resetColor()">Reset szín</button>
+      <button id="glowBtn" onclick="toggleGlow()">Glow<br>ON</button>
+
+      <input type="text" id="linkInput" placeholder="Link (pl. https://...)" />
+      <button onclick="insertLink()">Link beszúrás</button>
+
+      <button onclick="newNote()">Új jegyzet</button>
+      <button onclick="loadNote()">Jegyzet betöltés</button>
+      <button onclick="saveNote()">Mentés</button>
+      <button onclick="deleteNote()">Törlés</button>
+      <button onclick="exportNotes()">Export (JSON)</button>
+      <button onclick="importNotes()">Import (JSON)</button>
+      <button onclick="downloadPNG(false)">PNG fekete háttér</button>
+      <button onclick="downloadPNG(true)">PNG átlátszó</button>
+    </div>
+
+    <div id="savePath" style="margin-top:6px; font-size:14px; font-family: 'Courier New', monospace;"></div>
+
+    <div id="editor" class="editor" contenteditable="true"></div>
+  </div>
+
+  <div class="saved-panel">
+    <h3>Mentett jegyzetek</h3>
+    <div id="savedList"></div>
+    <div id="pathInfo" class="neon-cyan" style="margin-top:10px;"></div>
+  </div>
+</div>
+
+<script>
+  const editor = document.getElementById("editor");
+  const savedList = document.getElementById("savedList");
+  const pathInfo = document.getElementById("pathInfo");
+  const savePath = document.getElementById("savePath");
+  let activeColorClass = "neon-white";
+  let glowOn = true;
+  let notes = [];
+
+  function setActiveColor(className){ activeColorClass = className; editor.focus(); }
+  function resetColor(){ activeColorClass = "neon-white"; editor.focus(); }
+  function setFont(){ editor.style.fontFamily = document.getElementById("fontSelect").value; editor.focus(); }
+  function setSize(size){ editor.style.fontSize = size + "px"; document.getElementById("sizeValue").innerText = size; editor.focus(); }
+  
+  function toggleGlow(){
+    glowOn = !glowOn;
+    document.querySelectorAll(".neon-orange, .neon-yellow, .neon-darkred, .neon-cyan, .neon-blue, .neon-deepblue, .neon-magenta, .neon-pink, .neon-green, .neon-lightgreen, .neon-lime, .neon-mint, .neon-purple, .neon-red, .neon-white").forEach(el => {
+      if(!glowOn){ el.style.textShadow = "none"; } 
+      else { const c = getComputedStyle(el).color; el.style.textShadow = `0 0 5px ${c}, 0 0 10px ${c}, 0 0 15px ${c}, 0 0 20px ${c}`; }
+    });
+    document.getElementById("glowBtn").innerHTML = glowOn ? "Glow<br>ON" : "Glow<br>OFF"; editor.focus();
+  }
+
+  function fixUrl(url){
+    url = url.trim();
+    if(!url) return "";
+    if(!url.startsWith("http://") && !url.startsWith("https://")) url = "https://" + url;
+    return url;
+  }
+
+  // JAVÍTÁS: Beszúrás után a link azonnal kattintható lesz
+  function insertLink(){
+    const urlInput = document.getElementById("linkInput");
+    const fixedUrl = fixUrl(urlInput.value);
+    if(!fixedUrl) return;
+    
+    // Először töröljük az inputot
+    urlInput.value = "";
+    
+    // Beszúrjuk a linket úgy, hogy ne örökölje az editor kattintás-tiltását
+    const linkHTML = `<a href="${fixedUrl}" target="_blank" rel="noopener noreferrer">${fixedUrl}</a>&nbsp;`;
+    document.execCommand('insertHTML', false, linkHTML);
+    editor.focus();
+  }
+
+  // JAVÍTÁS: Kattintás eseményfigyelő a linkekhez
+  editor.addEventListener("click", e => {
+    if (e.target.tagName === 'A') {
+      e.preventDefault(); // Megállítjuk az editor alapértelmezett viselkedését
+      window.open(e.target.href, '_blank');
+    }
+  });
+
+  editor.addEventListener("keydown", e => {
+    if(e.key.length === 1 && !e.ctrlKey && !e.metaKey){
+      e.preventDefault();
+      let char = e.key;
+      if(char === " "){ char = "&nbsp;"; }
+      document.execCommand('insertHTML', false, `<span class="${activeColorClass}">${char}</span>`);
+    } else if(e.key === "Enter"){
+      e.preventDefault();
+      document.execCommand('insertHTML', false, "\n");
+    }
+  });
+
+  function newNote(){ editor.innerHTML = ""; }
+  function deleteNote(){ editor.innerHTML = ""; }
+
+  function saveNote(){
+    const intro = prompt("Írd be a bevezetőt:"); if(intro===null) return;
+    const name = prompt("Jegyzet neve:"); if(!name) return;
+    const date = new Date();
+    const timestamp = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+    const html = `<div class="${activeColorClass}">${intro} - ${name} - ${timestamp}</div><br>${editor.innerHTML}`;
+    const fileName = `Jegyzetek_${name}_${timestamp.replace(/[: ]/g, ".")}.json`;
+    const data = {name, timestamp, content: html, color: activeColorClass};
+    notes.push(data);
+
+    const file = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(file);
+    link.download = fileName;
+    link.click();
+
+    addSavedItem(name, timestamp, activeColorClass);
+    
+    savePath.innerHTML = `
+      <span style="color:#00ff00">Mentés helye:</span> <span style="color:#ffff00">Böngésző letöltési mappa</span><br>
+      <span style="color:#00ff00">Utolsó mentés:</span> <span style="color:#00ff00">${fileName}</span><br>
+      <span style="color:#00ff00">Időpont:</span> <span style="color:#00f6ff">${timestamp}</span>`;
+  }
+
+  function addSavedItem(name, date, color){
+    const div = document.createElement("div");
+    div.className="saved-item";
+    div.innerHTML=`<span class="${color}">${name} - ${date}</span>`;
+    div.onclick = ()=>{ editor.innerHTML = notes.find(n=>n.name===name && n.timestamp===date).content; };
+    savedList.appendChild(div);
+  }
+
+  function loadNote(){
+    const name = prompt("Melyik jegyzetet szeretnéd betölteni?"); if(!name) return;
+    const note = notes.find(n=>n.name===name);
+    if(note) editor.innerHTML = note.content;
+  }
+
+  function exportNotes(){
+    const file = new Blob([JSON.stringify(notes)], {type:'application/json'});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(file);
+    link.download = `Jegyzetek_Export_${Date.now()}.json`;
+    link.click();
+  }
+
+  function importNotes(){
+    const input = document.createElement("input"); input.type="file"; input.accept="application/json";
+    input.onchange = e=>{
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = evt=>{
+        const imported = JSON.parse(evt.target.result);
+        notes = notes.concat(imported);
+        imported.forEach(n=>addSavedItem(n.name,n.timestamp,n.color));
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }
+
+  function downloadPNG(transparent){
+    const editorCopy = editor.cloneNode(true);
+    const wrapper = document.createElement("div");
+    
+    wrapper.style.display = "inline-block";
+    wrapper.style.padding = "20px";
+    wrapper.style.background = transparent ? "rgba(0,0,0,0)" : "#000";
+    editorCopy.style.background = transparent ? "rgba(0,0,0,0)" : "#050505";
+    
+    wrapper.appendChild(editorCopy);
+    document.body.appendChild(wrapper);
+
+    html2canvas(wrapper, {
+      backgroundColor: null,
+      logging: false,
+      useCORS: true,
+      scale: 2
+    }).then(canvas => {
+      const link = document.createElement("a");
+      link.download = `jegyzet_${transparent ? "atlatszo" : "fekete"}_${Date.now()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      document.body.removeChild(wrapper);
+    });
+  }
+</script>
+
+</body>
+</html>
