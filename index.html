@@ -93,11 +93,25 @@
     background:#222;
     padding:20px;
     box-sizing:border-box;
+    display: flex;
+    flex-direction: column;
     overflow-y:auto;
   }
   .saved-panel h3{ color:#00f6ff; margin-top:0; }
+  #savedList { flex: 1; overflow-y: auto; }
   .saved-item{ border-bottom:1px solid #333; padding:6px; cursor:pointer; }
   .saved-item:hover{ background:#111; }
+  .clear-btn {
+    background: #7a001f !important;
+    color: white !important;
+    border: 1px solid #ff0000 !important;
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  .clear-btn:hover { background: #ff0000 !important; }
 </style>
 </head>
 <body>
@@ -163,7 +177,7 @@
       <span id="sizeValue">18</span>px
 
       <button onclick="resetColor()">Reset szín</button>
-      <button id="glowBtn" onclick="toggleGlow()">Glow<br>ON</button>
+      <button id="glowBtn" onclick="toggleGlow()">Glow ON</button>
 
       <input type="text" id="linkInput" placeholder="Link (pl. https://...)" />
       <button onclick="insertLink()">Link beszúrás</button>
@@ -186,6 +200,7 @@
   <div class="saved-panel">
     <h3>Mentett jegyzetek</h3>
     <div id="savedList"></div>
+    <button class="clear-btn" onclick="clearList()">Lista ürítése</button>
     <div id="pathInfo" class="neon-cyan" style="margin-top:10px;"></div>
   </div>
 </div>
@@ -199,6 +214,15 @@
   let glowOn = true;
   let notes = [];
 
+  // Betöltés az oldal indulásakor a LocalStorage-ból
+  window.onload = () => {
+    const savedData = localStorage.getItem("neonNotes");
+    if (savedData) {
+      notes = JSON.parse(savedData);
+      notes.forEach(n => addSavedItemToUI(n.name, n.timestamp, n.color));
+    }
+  };
+
   function setActiveColor(className){ activeColorClass = className; editor.focus(); }
   function resetColor(){ activeColorClass = "neon-white"; editor.focus(); }
   function setFont(){ editor.style.fontFamily = document.getElementById("fontSelect").value; editor.focus(); }
@@ -206,11 +230,18 @@
   
   function toggleGlow(){
     glowOn = !glowOn;
-    document.querySelectorAll(".neon-orange, .neon-yellow, .neon-darkred, .neon-cyan, .neon-blue, .neon-deepblue, .neon-magenta, .neon-pink, .neon-green, .neon-lightgreen, .neon-lime, .neon-mint, .neon-purple, .neon-red, .neon-white").forEach(el => {
-      if(!glowOn){ el.style.textShadow = "none"; } 
-      else { const c = getComputedStyle(el).color; el.style.textShadow = `0 0 5px ${c}, 0 0 10px ${c}, 0 0 15px ${c}, 0 0 20px ${c}`; }
+    const neonElements = document.querySelectorAll(".neon-orange, .neon-yellow, .neon-darkred, .neon-cyan, .neon-blue, .neon-deepblue, .neon-magenta, .neon-pink, .neon-green, .neon-lightgreen, .neon-lime, .neon-mint, .neon-purple, .neon-red, .neon-white");
+    
+    neonElements.forEach(el => {
+      if(!glowOn){ 
+        el.style.textShadow = "none"; 
+      } else { 
+        el.style.textShadow = ""; 
+      }
     });
-    document.getElementById("glowBtn").innerHTML = glowOn ? "Glow<br>ON" : "Glow<br>OFF"; editor.focus();
+    
+    document.getElementById("glowBtn").innerText = glowOn ? "Glow ON" : "Glow OFF";
+    editor.focus();
   }
 
   function fixUrl(url){
@@ -220,53 +251,93 @@
     return url;
   }
 
-  // JAVÍTÁS: Beszúrás után a link azonnal kattintható lesz
   function insertLink(){
     const urlInput = document.getElementById("linkInput");
     const fixedUrl = fixUrl(urlInput.value);
     if(!fixedUrl) return;
-    
-    // Először töröljük az inputot
     urlInput.value = "";
-    
-    // Beszúrjuk a linket úgy, hogy ne örökölje az editor kattintás-tiltását
     const linkHTML = `<a href="${fixedUrl}" target="_blank" rel="noopener noreferrer">${fixedUrl}</a>&nbsp;`;
     document.execCommand('insertHTML', false, linkHTML);
     editor.focus();
   }
 
-  // JAVÍTÁS: Kattintás eseményfigyelő a linkekhez
   editor.addEventListener("click", e => {
     if (e.target.tagName === 'A') {
-      e.preventDefault(); // Megállítjuk az editor alapértelmezett viselkedését
+      e.preventDefault();
       window.open(e.target.href, '_blank');
     }
   });
 
+  function insertHTMLAtCursor(html){
+    const sel=window.getSelection();
+    if(!sel.rangeCount) return;
+    const range=sel.getRangeAt(0);
+    range.deleteContents();
+    const el=document.createElement("div");
+    el.innerHTML=html;
+    const frag=document.createDocumentFragment();
+    let node,lastNode;
+    while((node=el.firstChild)) lastNode=frag.appendChild(node);
+    range.insertNode(frag);
+    if(lastNode){
+      range.setStartAfter(lastNode);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+    editor.focus();
+  }
+
   editor.addEventListener("keydown", e => {
-    if(e.key.length === 1 && !e.ctrlKey && !e.metaKey){
+    if(e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey){
       e.preventDefault();
-      let char = e.key;
-      if(char === " "){ char = "&nbsp;"; }
-      document.execCommand('insertHTML', false, `<span class="${activeColorClass}">${char}</span>`);
+      let char = e.key === " " ? "&nbsp;" : e.key;
+      const shadowStyle = glowOn ? "" : "style='text-shadow:none'";
+      insertHTMLAtCursor(`<span class="${activeColorClass}" ${shadowStyle}>${char}</span>`);
     } else if(e.key === "Enter"){
       e.preventDefault();
-      document.execCommand('insertHTML', false, "\n");
+      insertHTMLAtCursor("<div><br></div>");
     }
+  });
+
+  editor.addEventListener("paste", e=>{
+    e.preventDefault();
+    const text=(e.clipboardData||window.clipboardData).getData("text");
+    let html="";
+    const shadowStyle = glowOn ? "" : "style='text-shadow:none'";
+    for(let ch of text){
+      if(ch==="\n") html+="<br>";
+      else if(ch===" ") html+="&nbsp;";
+      else html+=`<span class="${activeColorClass}" ${shadowStyle}>${ch}</span>`;
+    }
+    insertHTMLAtCursor(html);
   });
 
   function newNote(){ editor.innerHTML = ""; }
   function deleteNote(){ editor.innerHTML = ""; }
 
+  function getFormattedDate() {
+    const date = new Date();
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    const h = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    return `${y}-${m}-${d}_${h}-${min}`;
+  }
+
   function saveNote(){
     const intro = prompt("Írd be a bevezetőt:"); if(intro===null) return;
     const name = prompt("Jegyzet neve:"); if(!name) return;
-    const date = new Date();
-    const timestamp = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+    const timestamp = new Date().toLocaleString();
+    const fileTimestamp = getFormattedDate();
+    
     const html = `<div class="${activeColorClass}">${intro} - ${name} - ${timestamp}</div><br>${editor.innerHTML}`;
-    const fileName = `Jegyzetek_${name}_${timestamp.replace(/[: ]/g, ".")}.json`;
+    const fileName = `Jegyzetek_${name}_${fileTimestamp}.json`;
     const data = {name, timestamp, content: html, color: activeColorClass};
+    
     notes.push(data);
+    localStorage.setItem("neonNotes", JSON.stringify(notes));
 
     const file = new Blob([JSON.stringify(data)], { type: 'application/json' });
     const link = document.createElement("a");
@@ -274,7 +345,7 @@
     link.download = fileName;
     link.click();
 
-    addSavedItem(name, timestamp, activeColorClass);
+    addSavedItemToUI(name, timestamp, activeColorClass);
     
     savePath.innerHTML = `
       <span style="color:#00ff00">Mentés helye:</span> <span style="color:#ffff00">Böngésző letöltési mappa</span><br>
@@ -282,12 +353,23 @@
       <span style="color:#00ff00">Időpont:</span> <span style="color:#00f6ff">${timestamp}</span>`;
   }
 
-  function addSavedItem(name, date, color){
+  function addSavedItemToUI(name, date, color){
     const div = document.createElement("div");
     div.className="saved-item";
     div.innerHTML=`<span class="${color}">${name} - ${date}</span>`;
-    div.onclick = ()=>{ editor.innerHTML = notes.find(n=>n.name===name && n.timestamp===date).content; };
+    div.onclick = ()=>{ 
+      const found = notes.find(n=>n.name===name && n.timestamp===date);
+      if(found) editor.innerHTML = found.content; 
+    };
     savedList.appendChild(div);
+  }
+
+  function clearList() {
+    if(confirm("Biztosan törölni szeretnéd az összes mentett elemet a listáról?")) {
+      notes = [];
+      localStorage.removeItem("neonNotes");
+      savedList.innerHTML = "";
+    }
   }
 
   function loadNote(){
@@ -297,10 +379,14 @@
   }
 
   function exportNotes(){
+    const name = prompt("Export fájl neve:"); if(!name) return;
+    const fileTimestamp = getFormattedDate();
+    const fileName = `Jegyzetek_Export_${name}_${fileTimestamp}.json`;
+    
     const file = new Blob([JSON.stringify(notes)], {type:'application/json'});
     const link = document.createElement("a");
     link.href = URL.createObjectURL(file);
-    link.download = `Jegyzetek_Export_${Date.now()}.json`;
+    link.download = fileName;
     link.click();
   }
 
@@ -310,9 +396,19 @@
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.onload = evt=>{
-        const imported = JSON.parse(evt.target.result);
-        notes = notes.concat(imported);
-        imported.forEach(n=>addSavedItem(n.name,n.timestamp,n.color));
+        try {
+          const imported = JSON.parse(evt.target.result);
+          if (Array.isArray(imported)) {
+            notes = notes.concat(imported);
+            imported.forEach(n=>addSavedItemToUI(n.name, n.timestamp, n.color));
+          } else if (imported.name && imported.content) {
+            notes.push(imported);
+            addSavedItemToUI(imported.name, imported.timestamp, imported.color);
+          }
+          localStorage.setItem("neonNotes", JSON.stringify(notes));
+        } catch(err) {
+          alert("Hibás JSON fájl!");
+        }
       };
       reader.readAsText(file);
     };
