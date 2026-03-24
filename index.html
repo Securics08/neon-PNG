@@ -2,7 +2,7 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<title>RGB Gamer Screenshot - TOTAL FRAME FIX</title>
+<title>RGB Gamer Screenshot + Discord INI</title>
 <style>
 body {
     margin: 0; font-family: Arial, sans-serif; color: white;
@@ -59,6 +59,19 @@ input[type="range"] { width: 100%; cursor: pointer; }
 }
 
 .btn-row { margin-top: 20px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+/* INI blokk stílus */
+#iniContainer {
+    display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 720px; max-height: 80vh; background:#111; color:#ccc; padding:25px; border-radius:15px;
+    border:2px solid #6a00ff; overflow-y:auto; z-index:3000;
+}
+#textIni { width:100%; height:350px; background:#111; color:#ccc; font-family: monospace; font-size:16px; padding:10px; box-sizing:border-box; border:none; resize:vertical; }
+#charCount { margin-top:5px; font-size:14px; }
+#charCount.ok { color:#0f0; }
+#charCount.warn { color:#f44; }
+#iniClose { margin-top:10px; background:#cc0000; width:100%; }
+#iniCopy { margin-top:10px; background:#28a745; width:100%; }
 </style>
 </head>
 <body>
@@ -86,9 +99,21 @@ input[type="range"] { width: 100%; cursor: pointer; }
         <input type="range" id="hS" min="32" max="2160" value="600">
         <button style="margin-top:10px; width:100%;" onclick="captureSlider()">🎯 Képernyőkép csúszkával</button>
     </div>
+    <button style="margin-top:15px; width:100%;" onclick="showINI()">📝 Discord INI blokk</button>
+</div>
+
+<!-- INI blokk overlay -->
+<div id="iniContainer">
+    <h3>Discord INI blokk készítő (max 4000 karakter)</h3>
+    <textarea id="textIni" placeholder="Ide írd be az INI szöveget..."></textarea>
+    <div id="charCount" class="ok">0 / 4000 karakter</div>
+    <button id="iniCopy">✔ Másolás Discord INI blokkba</button>
+    <button id="iniClose">✖ Bezárás</button>
+    <p id="infoIni"></p>
 </div>
 
 <script>
+// Alap RGB Gamer Screenshot kód
 const wS = document.getElementById("wS"), hS = document.getElementById("hS");
 const wL = document.getElementById("wL"), hL = document.getElementById("hL");
 wS.oninput = () => wL.textContent = wS.value;
@@ -144,15 +169,10 @@ function showEditor() {
         const vH = video.videoHeight;
         const bW = box.offsetWidth;
         const bH = box.offsetHeight;
-
-        // FONTOS VÁLTOZATÁS: Math.min-t használunk, hogy a TELJES kép beleférjen levágás nélkül
         baseScale = Math.min(bW / vW, bH / vH);
-        
         zoom = 1;
-        // Középre igazítás a lila kereten belül
-        offX = (bW - vW * baseScale) / 2;
-        offY = (bH - vH * baseScale) / 2;
-        
+        offX = (bW - vW * baseScale)/2;
+        offY = (bH - vH * baseScale)/2;
         update();
     }
 
@@ -186,22 +206,18 @@ function showEditor() {
         const canvas = document.createElement('canvas');
         canvas.width = targetW; canvas.height = targetH;
         const ctx = canvas.getContext('2d');
-
         const currentScale = baseScale * zoom;
         const sx = -offX / currentScale;
         const sy = -offY / currentScale;
         const sw = box.offsetWidth / currentScale;
         const sh = box.offsetHeight / currentScale;
-
-        // Fekete háttér a mentett képen is, ha a vágás "kilógna"
         ctx.fillStyle = "black";
         ctx.fillRect(0, 0, targetW, targetH);
         ctx.drawImage(video, sx, sy, sw, sh, 0, 0, targetW, targetH);
-        
         const a = document.createElement('a');
         const mime = format === 'png' ? 'image/png' : 'image/jpeg';
         a.download = `screenshot_${targetW}x${targetH}.${format}`;
-        a.href = canvas.toDataURL(mime, 1.0);
+        a.href = canvas.toDataURL(mime,1.0);
         a.click();
     }
 
@@ -214,6 +230,34 @@ function showEditor() {
         if(stream) stream.getTracks().forEach(t => t.stop());
     };
 }
+
+// INI overlay
+const iniContainer = document.getElementById('iniContainer');
+const textIni = document.getElementById('textIni');
+const charCount = document.getElementById('charCount');
+const infoIni = document.getElementById('infoIni');
+const MAX_LENGTH = 4000;
+
+function showINI(){ iniContainer.style.display='block'; }
+document.getElementById('iniClose').onclick = () => iniContainer.style.display='none';
+
+textIni.addEventListener("input", ()=>{
+    const len = textIni.value.length;
+    charCount.textContent=`${len} / ${MAX_LENGTH} karakter`;
+    if(len>MAX_LENGTH){charCount.classList.remove("ok"); charCount.classList.add("warn");}
+    else{charCount.classList.remove("warn"); charCount.classList.add("ok");}
+    infoIni.textContent="";
+});
+
+document.getElementById('iniCopy').onclick = ()=>{
+    const text = textIni.value;
+    if(text.length>MAX_LENGTH){alert("Túl hosszú! Max 4000 karakter."); return;}
+    const block="```ini\n"+text+"\n```";
+    navigator.clipboard.writeText(block)
+        .then(()=>{infoIni.textContent="✔ INI blokk sikeresen másolva! Discordba Ctrl+V.";})
+        .catch(()=>{infoIni.textContent="✘ Hiba történt a másolás során."});
+};
 </script>
+
 </body>
 </html>
