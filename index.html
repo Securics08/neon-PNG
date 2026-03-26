@@ -2,262 +2,267 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<title>RGB Gamer Screenshot + Discord INI</title>
+<title>Gamer Multi-Tool: Ultimate PRO Final</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Pinyon+Script&family=Nabla&family=Bungee+Shade&family=Ewert&family=Vast+Shadow&family=Creepster&family=Lobster&family=Righteous&family=Faster+One&family=Special+Elite&family=Orbitron&family=Pacifico&family=Press+Start+2P&family=Permanent+Marker&family=Sacramento&family=Silkscreen&family=Codystar&family=Megrim&family=Fredericka+the+Great&family=UnifrakturMaguntia&family=Wallpoet&family=Syncopate&family=Fascinate+Inline&family=Nosifer&family=Rubik+Glitch&family=Bangers&family=Alumni+Sans+Inline+One&family=Iceberg&family=Glass+Antiqua&family=Kranky&family=Great+Vibes&family=Bruno+Ace+SC&family=VT323&family=Montserrat&family=Nunito&family=Oswald&family=Playfair+Display&family=Spectral&family=Ultra&family=Varela+Round&family=Alegreya&family=Roboto+Serif&family=Roboto+Mono&display=swap" rel="stylesheet">
+
 <style>
-body {
-    margin: 0; font-family: Arial, sans-serif; color: white;
-    display: flex; justify-content: center; align-items: center;
-    height: 100vh; overflow: hidden; background-color: #050505;
-}
+:root { --bg: #050505; --accent: #6a00ff; --panel: #1a1a1a; --text: #eee; --border: #444; }
+.light { --bg: #f5f5f5; --panel: #e0e0e0; --text: #222; --border: #bbb; --accent: #008800; }
+body { margin: 0; font-family: Arial, sans-serif; background-color: var(--bg); color: var(--text); overflow: hidden; }
+#main-nav { background: #111; padding: 10px; display: flex; gap: 10px; border-bottom: 2px solid var(--accent); justify-content: center; z-index: 5000; position: relative; }
+.nav-btn { background: #222; color: white; border: 1px solid var(--accent); padding: 8px 20px; cursor: pointer; border-radius: 5px; font-weight: bold; }
+.nav-btn.active { background: var(--accent); }
+.view-section { display: none; height: calc(100vh - 55px); width: 100vw; }
+.view-section.active { display: block; }
 
-body::before {
-    content: ""; position: fixed; width: 100%; height: 100%;
-    background: linear-gradient(45deg, #1a0000, #1a1000, #001a00, #00001a, #1a001a);
-    background-size: 400%; animation: rgbmove 20s linear infinite;
-    filter: blur(100px); z-index: -1; opacity: 0.4;
-}
-
+/* SCREENSHOT */
+#screenshot-view { display: none; justify-content: center; align-items: center; position: relative; }
+#screenshot-view.active { display: flex; }
+.rgb-bg::before { content: ""; position: fixed; width: 100%; height: 100%; background: linear-gradient(45deg, #1a0000, #1a1000, #001a00, #00001a, #1a001a); background-size: 400%; animation: rgbmove 20s linear infinite; filter: blur(100px); z-index: -1; opacity: 0.4; }
 @keyframes rgbmove { 0% { background-position: 0% 50%; } 100% { background-position: 400% 50%; } }
+.card { background: rgba(0,0,0,0.85); padding: 25px; border-radius: 20px; width: 480px; max-height: 85vh; text-align: center; box-shadow: 0 0 30px rgba(106, 0, 255, 0.3); overflow-y: auto; }
+.grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+.card button { padding: 8px; border-radius: 6px; border: none; background: var(--accent); color: white; font-weight: bold; cursor: pointer; font-size: 11px; }
 
-.card {
-    background: rgba(0,0,0,0.85); padding: 30px; border-radius: 20px;
-    width: 450px; max-height: 90vh; text-align: center;
-    box-shadow: 0 0 30px rgba(106, 0, 255, 0.3); overflow-y: auto;
-}
+/* JEGYZET */
+#topbar { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; background: var(--panel); border-bottom: 2px solid var(--border); align-items: center; }
+#container { position: relative; width: 100vw; height: calc(100vh - 180px); background: rgba(0,0,0,0.7); overflow: hidden; }
+#editor, #highlight { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 20px; box-sizing: border-box; border: none; outline: none; line-height: 1.6; font-size: 25px; white-space: pre-wrap; word-wrap: break-word; margin: 0; overflow-y: auto; }
+#editor { background: transparent; color: transparent; caret-color: white; z-index: 2; resize: none; }
+#highlight { z-index: 1; color: inherit; pointer-events: none; }
+.zenburn-mode .token-section { color: #8cd0d3 !important; font-weight: bold; }
+.zenburn-mode .token-key { color: #f0ef9d !important; }
+.zenburn-mode .token-comment { color: #7f9f7f !important; font-style: italic; }
+#stats { position: fixed; bottom: 10px; right: 20px; font-family: 'VT323'; font-size: 20px; color: #00ff00; pointer-events: none; z-index: 10; }
+.group { display: flex; align-items: center; gap: 4px; border-right: 1px solid var(--border); padding-right: 8px; margin-right: 4px; }
+button { background:#000; color:var(--text); border:1px solid var(--border); padding:6px 10px; border-radius:4px; cursor:pointer; }
+button:hover { background:#333; }
 
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-
-button {
-    padding: 10px; border-radius: 8px; border: none;
-    background: #6a00ff; color: white; font-weight: bold;
-    cursor: pointer; transition: 0.2s;
-}
-
-button:hover { transform: scale(1.02); background: #9d4edd; }
-
-.slider-container { margin-top: 15px; text-align: left; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; }
-input[type="range"] { width: 100%; cursor: pointer; }
-
-.overlay {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; z-index: 2000;
-}
-
-.editor-box { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #6a00ff; text-align: center; width: 720px; }
-
-.zoom-container {
-    position: relative; width: 600px; height: 400px; margin: 0 auto;
-    border: 3px solid #6a00ff; overflow: hidden; background: #000; cursor: move;
-}
-
-#previewVideo {
-    position: absolute;
-    top: 0; left: 0;
-    pointer-events: none;
-    will-change: transform;
-    transform-origin: 0 0;
-}
-
-.btn-row { margin-top: 20px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-
-/* INI blokk stílus */
-#iniContainer {
-    display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 720px; max-height: 80vh; background:#111; color:#ccc; padding:25px; border-radius:15px;
-    border:2px solid #6a00ff; overflow-y:auto; z-index:3000;
-}
+/* OVERLAYS */
+.overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; z-index: 6000; }
+.editor-box { background: #111; padding: 20px; border-radius: 15px; border: 1px solid var(--accent); text-align: center; width: 720px; }
+.zoom-container { position: relative; width: 600px; height: 400px; margin: 0 auto; border: 3px solid var(--accent); overflow: hidden; background: #000; }
+#previewVideo { position: absolute; top: 0; left: 0; pointer-events: none; transform-origin: 0 0; }
+#iniContainer { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 720px; max-height: 80vh; background:#111; color:#ccc; padding:25px; border-radius:15px; border:2px solid var(--accent); overflow-y:auto; z-index:7000; }
 #textIni { width:100%; height:350px; background:#111; color:#ccc; font-family: monospace; font-size:16px; padding:10px; box-sizing:border-box; border:none; resize:vertical; }
-#charCount { margin-top:5px; font-size:14px; }
-#charCount.ok { color:#0f0; }
-#charCount.warn { color:#f44; }
-#iniClose { margin-top:10px; background:#cc0000; width:100%; }
-#iniCopy { margin-top:10px; background:#28a745; width:100%; }
+#pdf-helper { position: absolute; left: -9999px; width: 800px; padding: 40px; white-space: pre-wrap; }
 </style>
 </head>
-<body>
+<body class="zenburn-mode">
 
-<div class="card">
-    <h2>🎮 RGB Gamer Screenshot</h2>
-    <div class="grid">
-        <button onclick="capture(3840,2160)">4K</button>
-        <button onclick="capture(2560,1440)">2K</button>
-        <button onclick="capture(1920,1080)">Full HD</button>
-        <button onclick="capture(1280,720)">HD</button>
-        <button onclick="capture(1080,1080)">1080×1080</button>
-        <button onclick="capture(1200,628)">1200×628</button>
-        <button onclick="capture(800,600)">800×600</button>
-        <button onclick="capture(640,480)">640×480</button>
-        <button onclick="capture(256,256)">256×256</button>
-        <button onclick="capture(128,128)">128×128</button>
-        <button onclick="capture(64,64)">64×64</button>
-        <button onclick="capture(32,32)">32×32 (RA2 ikon)</button>
+<nav id="main-nav">
+    <button class="nav-btn active" onclick="showSection('screenshot-view', this)">📸 Screenshot & Discord</button>
+    <button class="nav-btn" onclick="showSection('note-view', this)">📝 Végtelen Jegyzet PRO</button>
+</nav>
+
+<div id="screenshot-view" class="view-section active rgb-bg">
+    <div class="card">
+        <h2>🎮 RGB Gamer Screenshot</h2>
+        <div class="grid">
+            <button onclick="capture(3840,2160)">4K</button>
+            <button onclick="capture(2560,1440)">2K</button>
+            <button onclick="capture(1920,1080)">Full HD</button>
+            <button onclick="capture(1280,720)">HD</button>
+            <button onclick="capture(1080,1080)">1:1 HD</button>
+            <button onclick="capture(1200,628)">FB Post</button>
+            <button onclick="capture(800,600)">SVGA</button>
+            <button onclick="capture(640,480)">VGA</button>
+            <button onclick="capture(256,256)">256px</button>
+            <button onclick="capture(128,128)">128px</button>
+            <button onclick="capture(64,64)">64px</button>
+            <button onclick="capture(32,32)">32px (RA2)</button>
+        </div>
+        <div class="slider-container">
+            <label>Szélesség: <span id="wL">800</span> px</label>
+            <input type="range" id="wS" min="32" max="3840" value="800">
+            <label>Magasság: <span id="hL">600</span> px</label>
+            <input type="range" id="hS" min="32" max="2160" value="600">
+            <button style="margin-top:10px; width:100%; background:#6a00ff; color:white;" onclick="captureSlider()">🎯 Egyedi Screenshot</button>
+        </div>
+        <button style="margin-top:15px; width:100%;" onclick="showINI()">📝 Discord INI blokk</button>
     </div>
-    <div class="slider-container">
-        <label>Szélesség: <span id="wL">800</span> px</label>
-        <input type="range" id="wS" min="32" max="3840" value="800">
-        <label>Magasság: <span id="hL">600</span> px</label>
-        <input type="range" id="hS" min="32" max="2160" value="600">
-        <button style="margin-top:10px; width:100%;" onclick="captureSlider()">🎯 Képernyőkép csúszkával</button>
-    </div>
-    <button style="margin-top:15px; width:100%;" onclick="showINI()">📝 Discord INI blokk</button>
 </div>
 
-<!-- INI blokk overlay -->
+<div id="note-view" class="view-section">
+    <div id="topbar">
+        <div class="group">
+            <select id="notes" onchange="switchNote()"></select>
+            <button onclick="newNote()">+ Új</button>
+            <button onclick="importTxt()">📂 Import</button>
+            <button onclick="deleteNote()" style="color:#ff4444;">🗑️ Töröl</button>
+        </div>
+        <div class="group">
+            <select id="fontFamily" onchange="changeFont()" style="width:130px;">
+                <option value="Arial">1. Arial</option>
+                <option value="Montserrat" style="font-family:'Montserrat';">2. Montserrat</option>
+                <option value="Nunito" style="font-family:'Nunito';">3. Nunito</option>
+                <option value="Oswald" style="font-family:'Oswald';">4. Oswald</option>
+                <option value="Playfair Display" style="font-family:'Playfair Display';">5. Playfair</option>
+                <option value="Spectral" style="font-family:'Spectral';">6. Spectral</option>
+                <option value="Ultra" style="font-family:'Ultra';">7. Ultra</option>
+                <option value="Varela Round" style="font-family:'Varela Round';">8. Varela</option>
+                <option value="Roboto Mono" style="font-family:'Roboto Mono';">9. Mono</option>
+                <option value="Orbitron" style="font-family:'Orbitron';">10. Sci-Fi</option>
+                <option value="Special Elite" style="font-family:'Special Elite';">11. Gépelt</option>
+                <option value="VT323" style="font-family:'VT323';">12. Terminál</option>
+                <option value="Press Start 2P" style="font-family:'Press Start 2P';">13. 8-Bit</option>
+                <option value="Monoton" style="font-family:'Monoton';">14. Neon</option>
+                <option value="Pinyon Script" style="font-family:'Pinyon Script';">15. Kézírás</option>
+                <option value="Creepster" style="font-family:'Creepster';">16. Horror</option>
+                <option value="Nabla" style="font-family:'Nabla';">17. 3D Nabla</option>
+                <option value="Lobster" style="font-family:'Lobster';">18. Lobster</option>
+                <option value="Bungee Shade" style="font-family:'Bungee Shade';">19. Bungee</option>
+                <option value="Permanent Marker" style="font-family:'Permanent Marker';">20. Filctoll</option>
+                <option value="Silkscreen" style="font-family:'Silkscreen';">21. Pixel</option>
+                <option value="UnifrakturMaguntia" style="font-family:'UnifrakturMaguntia';">22. Gótikus</option>
+                <option value="Wallpoet" style="font-family:'Wallpoet';">23. Graffiti</option>
+                <option value="Nosifer" style="font-family:'Nosifer';">24. Vérző</option>
+                <option value="Rubik Glitch" style="font-family:'Rubik Glitch';">25. Glitch</option>
+                <option value="Bangers" style="font-family:'Bangers';">26. Képregény</option>
+                <option value="Iceberg" style="font-family:'Iceberg';">27. Jéghegy</option>
+                <option value="Great Vibes" style="font-family:'Great Vibes';">28. Elegáns</option>
+                <option value="Pacifico" style="font-family:'Pacifico';">29. Pacifico</option>
+                <option value="Sacramento" style="font-family:'Sacramento';">30. Sacramento</option>
+                <option value="Codystar" style="font-family:'Codystar';">31. Csillogó</option>
+                <option value="Megrim" style="font-family:'Megrim';">32. Megrim</option>
+                <option value="Syncopate" style="font-family:'Syncopate';">33. Syncopate</option>
+                <option value="Kranky" style="font-family:'Kranky';">34. Kranky</option>
+                <option value="Ewert" style="font-family:'Ewert';">35. Ewert</option>
+            </select>
+            <input type="number" id="fontSize" value="25" min="8" max="100" style="width:45px" oninput="changeSize()">
+        </div>
+        <div class="group">
+            <button onclick="speakText()">🔊</button>
+            <button onclick="stopSpeak()" style="color:red">⏹</button>
+            <button onclick="setZenburn(true)">🎨 Z</button>
+            <button onclick="setZenburn(false)">⚪ N</button>
+        </div>
+        <div class="group">
+            <button onclick="saveTxt()" style="color:#00ff00">💾 TXT</button>
+            <button onclick="saveIni()" style="color:#ffcc00">📜 INI</button>
+            <button onclick="downloadAllZip()">📦 ZIP</button>
+            <button onclick="downloadPDF()">📄 PDF</button>
+            <button onclick="resetAll()" style="color:red; font-weight:bold;">🔄 RESET</button>
+        </div>
+        <button onclick="toggleDark()">🌓</button>
+    </div>
+    <div id="container">
+        <div id="highlight"></div>
+        <textarea id="editor" spellcheck="false" oninput="handleInput()" onscroll="syncScroll()"></textarea>
+    </div>
+    <div id="stats">Szavak: 0 | Karakterek: 0</div>
+    <input type="file" id="fileInput" accept=".txt,.zip,.ini" style="display:none">
+</div>
+
 <div id="iniContainer">
-    <h3>Discord INI blokk készítő (max 4000 karakter)</h3>
-    <textarea id="textIni" placeholder="Ide írd be az INI szöveget..."></textarea>
-    <div id="charCount" class="ok">0 / 4000 karakter</div>
-    <button id="iniCopy">✔ Másolás Discord INI blokkba</button>
-    <button id="iniClose">✖ Bezárás</button>
-    <p id="infoIni"></p>
+    <h3>Discord INI blokk ; Discord INI block</h3>
+    <textarea id="textIni"></textarea>
+    <button onclick="copyIni()" style="background:#28a745; color:white; width:100%; padding:10px; margin-top:5px;">✔ Másolás</button>
+    <button onclick="document.getElementById('iniContainer').style.display='none'" style="background:#cc0000; color:white; width:100%; padding:10px; margin-top:5px;">✖ Bezárás</button>
 </div>
 
 <script>
-// Alap RGB Gamer Screenshot kód
-const wS = document.getElementById("wS"), hS = document.getElementById("hS");
-const wL = document.getElementById("wL"), hL = document.getElementById("hL");
-wS.oninput = () => wL.textContent = wS.value;
-hS.oninput = () => hL.textContent = hS.value;
-
-let stream = null, targetW, targetH;
-let zoom = 1, offX = 0, offY = 0;
-let baseScale = 1;
-
-async function capture(w, h) {
-    targetW = w; targetH = h;
-    try {
-        stream = await navigator.mediaDevices.getDisplayMedia({ video: { cursor: "never" } });
-        showEditor();
-    } catch (e) { console.error(e); }
+function showSection(id, btn) {
+    document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
 }
 
+/* SCREENSHOT */
+let stream = null, targetW, targetH, baseScale = 1;
+const wS = document.getElementById("wS"), hS = document.getElementById("hS");
+wS.oninput = () => document.getElementById("wL").textContent = wS.value;
+hS.oninput = () => document.getElementById("hL").textContent = hS.value;
+
+async function capture(w, h) { targetW = w; targetH = h; try { stream = await navigator.mediaDevices.getDisplayMedia({ video: { cursor: "never" } }); showEditor(); } catch (e) {} }
 function captureSlider() { capture(parseInt(wS.value), parseInt(hS.value)); }
 
 function showEditor() {
-    const ov = document.createElement('div');
-    ov.className = 'overlay';
-    ov.innerHTML = `
-        <div class="editor-box">
-            <h3 style="color:#6a00ff;">Teljes kép vágása - Nincs levágás alapnál</h3>
-            <div class="zoom-container" id="box">
-                <video id="previewVideo" autoplay playsinline></video>
-            </div>
-            <div class="btn-row">
-                <button id="savePNG" style="background:#28a745;">💾 PNG</button>
-                <button id="saveJPG" style="background:#218838;">💾 JPG</button>
-                <button id="saveJPEG" style="background:#1e7e34;">💾 JPEG</button>
-                <button id="reset" style="background:#ffaa00;">↺ ALAPHELYZET</button>
-                <button id="close" style="background:#cc0000;">Bezár</button>
-            </div>
-        </div>
-    `;
+    const ov = document.createElement('div'); ov.className = 'overlay';
+    ov.innerHTML = `<div class="editor-box"><h3>Vágás ; Crop</h3><div class="zoom-container" id="box"><video id="previewVideo" autoplay playsinline></video></div><div style="margin-top:20px;"><button onclick="saveImg()" style="background:#28a745; color:white; padding:10px 20px;">💾 Mentés PNG</button> <button id="ce" style="background:#cc0000; color:white; padding:10px 20px;">Bezár</button></div></div>`;
     document.body.appendChild(ov);
-
-    const video = document.getElementById('previewVideo');
-    const box = document.getElementById('box');
-    video.srcObject = stream;
-
-    function update() {
-        video.style.width = (video.videoWidth * baseScale * zoom) + "px";
-        video.style.height = (video.videoHeight * baseScale * zoom) + "px";
-        video.style.left = offX + "px";
-        video.style.top = offY + "px";
-    }
-
-    function fullReset() {
-        const vW = video.videoWidth;
-        const vH = video.videoHeight;
-        const bW = box.offsetWidth;
-        const bH = box.offsetHeight;
-        baseScale = Math.min(bW / vW, bH / vH);
-        zoom = 1;
-        offX = (bW - vW * baseScale)/2;
-        offY = (bH - vH * baseScale)/2;
-        update();
-    }
-
-    video.onloadedmetadata = fullReset;
-
-    box.onwheel = (e) => {
-        e.preventDefault();
-        const delta = e.deltaY < 0 ? 1.1 : 0.9;
-        const rect = box.getBoundingClientRect();
-        const mX = e.clientX - rect.left;
-        const mY = e.clientY - rect.top;
-        offX = mX - (mX - offX) * delta;
-        offY = mY - (mY - offY) * delta;
-        zoom *= delta;
-        update();
+    const video = document.getElementById('previewVideo'); const box = document.getElementById('box'); video.srcObject = stream;
+    video.onloadedmetadata = () => {
+        baseScale = Math.min(box.offsetWidth / video.videoWidth, box.offsetHeight / video.videoHeight);
+        video.style.width = (video.videoWidth * baseScale) + "px"; video.style.left = ((box.offsetWidth - video.videoWidth * baseScale)/2) + "px"; video.style.top = ((box.offsetHeight - video.videoHeight * baseScale)/2) + "px";
     };
+    document.getElementById('ce').onclick = () => { document.body.removeChild(ov); if(stream) stream.getTracks().forEach(t => t.stop()); };
+}
+function saveImg() {
+    const v = document.getElementById('previewVideo'); const c = document.createElement('canvas'); c.width = targetW; c.height = targetH;
+    const ctx = c.getContext('2d'); ctx.drawImage(v, 0, 0, v.videoWidth, v.videoHeight, 0, 0, targetW, targetH);
+    const a = document.createElement('a'); a.download = `shot.png`; a.href = c.toDataURL(); a.click();
+}
+function showINI() { document.getElementById('iniContainer').style.display='block'; }
+function copyIni() { navigator.clipboard.writeText("```ini\n" + document.getElementById('textIni').value + "\n```"); alert("Másolva!"); }
 
-    let isDrag = false, lastX, lastY;
-    box.onmousedown = (e) => { isDrag = true; lastX = e.clientX; lastY = e.clientY; };
-    window.onmousemove = (e) => { 
-        if(isDrag) { 
-            offX += e.clientX - lastX; 
-            offY += e.clientY - lastY; 
-            lastX = e.clientX; lastY = e.clientY;
-            update(); 
-        } 
-    };
-    window.onmouseup = () => isDrag = false;
+/* NOTE */
+let notes = JSON.parse(localStorage.getItem("MY_NOTES")) || {"Jegyzet_1": ""};
+let current = Object.keys(notes)[0];
+const editor = document.getElementById("editor"); const highlight = document.getElementById("highlight");
 
-    function saveImage(format) {
-        const canvas = document.createElement('canvas');
-        canvas.width = targetW; canvas.height = targetH;
-        const ctx = canvas.getContext('2d');
-        const currentScale = baseScale * zoom;
-        const sx = -offX / currentScale;
-        const sy = -offY / currentScale;
-        const sw = box.offsetWidth / currentScale;
-        const sh = box.offsetHeight / currentScale;
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, targetW, targetH);
-        ctx.drawImage(video, sx, sy, sw, sh, 0, 0, targetW, targetH);
-        const a = document.createElement('a');
-        const mime = format === 'png' ? 'image/png' : 'image/jpeg';
-        a.download = `screenshot_${targetW}x${targetH}.${format}`;
-        a.href = canvas.toDataURL(mime,1.0);
-        a.click();
+function applyHighlight() {
+    let html = editor.value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    if (document.body.classList.contains("zenburn-mode")) {
+        html = html.replace(/(\[.*?\])/g, '<span class="token-section">$1</span>').replace(/^([\w\s]+=)/gm, '<span class="token-key">$1</span>').replace(/(;.*$)/gm, '<span class="token-comment">$1</span>');
     }
+    highlight.innerHTML = html + (editor.value.endsWith('\n') ? ' ' : '');
+}
+function handleInput() {
+    notes[current] = editor.value; applyHighlight();
+    document.getElementById("stats").innerText = `Szavak: ${editor.value.trim() ? editor.value.trim().split(/\s+/).length : 0} | Karakterek: ${editor.value.length}`;
+    localStorage.setItem("MY_NOTES", JSON.stringify(notes));
+}
+function syncScroll() { highlight.scrollTop = editor.scrollTop; }
+function switchNote() { current = document.getElementById("notes").value; editor.value = notes[current] || ""; handleInput(); }
+function newNote() { let n = prompt("Név:"); if(n){notes[n]=""; current=n; refresh();} }
+function deleteNote() { if(Object.keys(notes).length > 1) { if(confirm("Törlöd ezt a jegyzetet?")) { delete notes[current]; current = Object.keys(notes)[0]; refresh(); } } else { notes[current] = ""; handleInput(); } }
+function resetAll() { if(confirm("MINDEN jegyzetet törölni szeretnél?")) { localStorage.removeItem("MY_NOTES"); notes = {"Jegyzet_1": ""}; current = "Jegyzet_1"; refresh(); } }
 
-    document.getElementById('savePNG').onclick = () => saveImage('png');
-    document.getElementById('saveJPG').onclick = () => saveImage('jpg');
-    document.getElementById('saveJPEG').onclick = () => saveImage('jpeg');
-    document.getElementById('reset').onclick = fullReset;
-    document.getElementById('close').onclick = () => {
-        document.body.removeChild(ov);
-        if(stream) stream.getTracks().forEach(t => t.stop());
+function refresh() { 
+    const sel = document.getElementById("notes"); sel.innerHTML=""; 
+    for(let n in notes){ let o=document.createElement("option"); o.value=o.textContent=n; sel.appendChild(o); }
+    sel.value=current; editor.value = notes[current] || ""; handleInput();
+}
+
+function saveTxt() { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([editor.value], {type:"text/plain"})); a.download = current+".txt"; a.click(); }
+function saveIni() { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([editor.value], {type:"text/plain"})); a.download = current+".ini"; a.click(); }
+
+function importTxt(){
+    const fi = document.getElementById("fileInput"); fi.click();
+    fi.onchange = () => {
+        const f = fi.files[0]; if(!f) return;
+        const r = new FileReader();
+        if(f.name.endsWith('.zip')){
+            r.onload = e => { JSZip.loadAsync(e.target.result).then(zip => { zip.forEach((path, file) => { if(path.endsWith('.txt') || path.endsWith('.ini')) file.async("string").then(content => { let n = path.split('.')[0]; notes[n] = content; current = n; refresh(); }); }); }); };
+            r.readAsArrayBuffer(f);
+        } else {
+            r.onload = e => { let n = f.name.split('.')[0]; notes[n]=e.target.result; current=n; refresh(); };
+            r.readAsText(f);
+        }
     };
 }
 
-// INI overlay
-const iniContainer = document.getElementById('iniContainer');
-const textIni = document.getElementById('textIni');
-const charCount = document.getElementById('charCount');
-const infoIni = document.getElementById('infoIni');
-const MAX_LENGTH = 4000;
+function changeFont() { editor.style.fontFamily = highlight.style.fontFamily = document.getElementById("fontFamily").value; }
+function changeSize() { editor.style.fontSize = highlight.style.fontSize = document.getElementById("fontSize").value + "px"; }
+function setZenburn(on) { if(on) document.body.classList.add("zenburn-mode"); else document.body.classList.remove("zenburn-mode"); applyHighlight(); }
+function speakText(){ window.speechSynthesis.cancel(); const m=new SpeechSynthesisUtterance(editor.value); m.lang='hu-HU'; window.speechSynthesis.speak(m); }
+function stopSpeak(){ window.speechSynthesis.cancel(); }
+function downloadPDF() {
+    const h = document.getElementById("pdf-helper"); h.style.fontFamily = editor.style.fontFamily; h.innerText = editor.value;
+    html2canvas(h).then(c => { const pdf = new jspdf.jsPDF(); pdf.addImage(c.toDataURL("image/png"), 'PNG', 0, 0, 210, (c.height * 210) / c.width); pdf.save(current + ".pdf"); });
+}
+function downloadAllZip() {
+    const zip = new JSZip(); for(let n in notes) zip.file(n + ".txt", notes[n]);
+    zip.generateAsync({type:"blob"}).then(c => { const a = document.createElement("a"); a.href = URL.createObjectURL(c); a.download = "jegyzetek.zip"; a.click(); });
+}
+function toggleDark() { document.body.classList.toggle("light"); }
 
-function showINI(){ iniContainer.style.display='block'; }
-document.getElementById('iniClose').onclick = () => iniContainer.style.display='none';
-
-textIni.addEventListener("input", ()=>{
-    const len = textIni.value.length;
-    charCount.textContent=`${len} / ${MAX_LENGTH} karakter`;
-    if(len>MAX_LENGTH){charCount.classList.remove("ok"); charCount.classList.add("warn");}
-    else{charCount.classList.remove("warn"); charCount.classList.add("ok");}
-    infoIni.textContent="";
-});
-
-document.getElementById('iniCopy').onclick = ()=>{
-    const text = textIni.value;
-    if(text.length>MAX_LENGTH){alert("Túl hosszú! Max 4000 karakter."); return;}
-    const block="```ini\n"+text+"\n```";
-    navigator.clipboard.writeText(block)
-        .then(()=>{infoIni.textContent="✔ INI blokk sikeresen másolva! Discordba Ctrl+V.";})
-        .catch(()=>{infoIni.textContent="✘ Hiba történt a másolás során."});
-};
+refresh();
 </script>
-
 </body>
 </html>
