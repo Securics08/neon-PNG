@@ -49,6 +49,10 @@ button:hover { background:#333; }
 #iniContainer { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 720px; max-height: 80vh; background:#111; color:#ccc; padding:25px; border-radius:15px; border:2px solid var(--accent); overflow-y:auto; z-index:7000; }
 #textIni { width:100%; height:350px; background:#111; color:#ccc; font-family: monospace; font-size:16px; padding:10px; box-sizing:border-box; border:none; resize:vertical; }
 #pdf-helper { position: absolute; left: -9999px; width: 800px; padding: 40px; white-space: pre-wrap; }
+
+/* ÚJ SZÁMLÁLÓ STÍLUS */
+#iniCounter { float: right; font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: bold; color: #39ff14; margin-bottom: 5px; }
+.counter-danger { color: #ff0000 !important; text-shadow: 0 0 10px #ff0000; }
 </style>
 </head>
 <body class="zenburn-mode">
@@ -158,8 +162,11 @@ button:hover { background:#333; }
 </div>
 
 <div id="iniContainer">
-    <h3>Discord INI blokk ; Discord INI block</h3>
-    <textarea id="textIni"></textarea>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3>Discord INI blokk ; Discord INI block</h3>
+        <div id="iniCounter">Karakterek: 0 / 4000</div>
+    </div>
+    <textarea id="textIni" oninput="updateIniCounter()"></textarea>
     <button onclick="copyIni()" style="background:#28a745; color:white; width:100%; padding:10px; margin-top:5px;">✔ Másolás</button>
     <button onclick="document.getElementById('iniContainer').style.display='none'" style="background:#cc0000; color:white; width:100%; padding:10px; margin-top:5px;">✖ Bezárás</button>
 </div>
@@ -197,7 +204,24 @@ function saveImg() {
     const ctx = c.getContext('2d'); ctx.drawImage(v, 0, 0, v.videoWidth, v.videoHeight, 0, 0, targetW, targetH);
     const a = document.createElement('a'); a.download = `shot.png`; a.href = c.toDataURL(); a.click();
 }
-function showINI() { document.getElementById('iniContainer').style.display='block'; }
+
+/* DISCORD INI SZÁMLÁLÓ FUNKCIÓ */
+function updateIniCounter() {
+    const text = document.getElementById('textIni').value;
+    const counter = document.getElementById('iniCounter');
+    const len = text.length;
+    counter.innerText = `Karakterek: ${len} / 4000`;
+    if(len > 3800) {
+        counter.classList.add('counter-danger');
+    } else {
+        counter.classList.remove('counter-danger');
+    }
+}
+
+function showINI() { 
+    document.getElementById('iniContainer').style.display='block'; 
+    updateIniCounter();
+}
 function copyIni() { navigator.clipboard.writeText("```ini\n" + document.getElementById('textIni').value + "\n```"); alert("Másolva!"); }
 
 /* NOTE */
