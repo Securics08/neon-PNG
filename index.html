@@ -6,7 +6,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Pinyon+Script&family=Nabla&family=Bungee+Shade&family=Ewert&family=Vast+Shadow&family=Creepster&family=Lobster&family=Righteous&family=Faster+One&family=Special+Elite&family=Orbitron&family=Pacifico&family=Press+Start+2P&family=Permanent+Marker&family=Sacramento&family=Silkscreen&family=Codystar&family=Megrim&family=Fredericka+the+Great&family=UnifrakturMaguntia&family=Wallpoet&family=Syncopate&family=Fascinate+Inline&family=Nosifer&family=Rubik+Glitch&family=Bangers&family=Alumni+Sans+Inline+One&family=Iceberg&family=Glass+Antiqua&family=Kranky&family=Great+Vibes&family=Bruno+Ace+SC&family=VT323&family=Montserrat&family=Nunito&family=Oswald&family=Playfair+Display&family=Spectral&family=Ultra&family=Varela+Round&family=Alegreya&family=Roboto+Serif&family=Roboto+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Pinyon+Script&family=Nabla&family=Bungee+Shade&family=Ewert&family=Vast+Shadow&family=Creepster&family=Lobster&family=Righteous&family=Faster+One&family=Special+Elite&family=Orbitron&family=Pacifico&family=Press+Start+2P&family=Permanent+Marker&family=Sacramento&family=Silkscreen&family=Codystar&family=Megrim&family=Fredericka+the+Great&family=UnifrakturMaguntia&family=Wallpoet&family=Syncopate&family=Fascinate+Inline&family=Nosifer&family=Rubik+Glitch&family=Bangers&family=Alumni+Sans+Inline+One&family=Iceberg&family=Glass+Antiqua&family=Kranky&family=Great+Vibes&family=Bruno+Ace+SC&family=VT323&family=Montserrat&family=Nunito&family=Oswald&family=Playfair+Display&family=Spectral&family=Ultra&family=Varela+Round&family=Alegreya&family=Roboto+Serif&family=Roboto+Mono&family=Bungee+Spice&family=Shadows+Into+Light&family=Indie+Flower&family=Dancing+Script&family=Caveat&family=Satisfy&family=Kaushan+Script&family=Yellowtail&family=Courgette&family=Amatic+SC&family=Bebas+Neue&family=Abril+Fatface&family=Patua+One&family=Fredoka+One&family=Limelight&family=Stalinist+One&family=Black+Ops+One&family=Shojumaru&family=Metal+Mania&family=Sancreek&family=Rye&family=Butcherman&family=Frijole&family=Eater&family=Aclonica&family=Michroma&family=Audiowide&family=Quantico&family=Russo+One&family=Squada+One&family=Allura&family=Alex+Brush&family=Cookie&family=Grand+Hotel&family=Parisienne&family=Rochester&family=Tangerine&family=Zeyada&family=Architects+Daughter&family=Covered+By+Your+Grace&family=Gloria+Hallelujah&family=Handlee&family=Patrick+Hand&family=Reenie+Beanie&family=Rock+Salt&family=Coming+Soon&family=Boogaloo&family=Carter+One&family=Chango&family=Cherry+Cream+Soda&family=Chewy&family=Fugaz+One&family=Luckiest+Guy&family=Titan+One&family=Yeseva+One&family=Marcellus&family=Cinzel&family=Forum&family=Cormorant+Garamond&display=swap" rel="stylesheet">
 
 <style>
 :root { --bg: #050505; --accent: #6a00ff; --panel: #1a1a1a; --text: #eee; --border: #444; }
@@ -99,42 +99,126 @@ button:hover { background:#333; }
             <button onclick="deleteNote()" style="color:#ff4444;">🗑️ Töröl</button>
         </div>
         <div class="group">
-            <select id="fontFamily" onchange="changeFont()" style="width:130px;">
-                <option value="Arial">1. Arial</option>
+            <select id="fontFamily" onchange="changeFont()" style="width:180px;">
+                <option value="Arial">1. Arial (Alap)</option>
                 <option value="Montserrat" style="font-family:'Montserrat';">2. Montserrat</option>
                 <option value="Nunito" style="font-family:'Nunito';">3. Nunito</option>
                 <option value="Oswald" style="font-family:'Oswald';">4. Oswald</option>
-                <option value="Playfair Display" style="font-family:'Playfair Display';">5. Playfair</option>
+                <option value="Playfair Display" style="font-family:'Playfair Display';">5. Playfair Display</option>
                 <option value="Spectral" style="font-family:'Spectral';">6. Spectral</option>
                 <option value="Ultra" style="font-family:'Ultra';">7. Ultra</option>
-                <option value="Varela Round" style="font-family:'Varela Round';">8. Varela</option>
-                <option value="Roboto Mono" style="font-family:'Roboto Mono';">9. Mono</option>
-                <option value="Orbitron" style="font-family:'Orbitron';">10. Sci-Fi</option>
-                <option value="Special Elite" style="font-family:'Special Elite';">11. Gépelt</option>
-                <option value="VT323" style="font-family:'VT323';">12. Terminál</option>
-                <option value="Press Start 2P" style="font-family:'Press Start 2P';">13. 8-Bit</option>
-                <option value="Monoton" style="font-family:'Monoton';">14. Neon</option>
-                <option value="Pinyon Script" style="font-family:'Pinyon Script';">15. Kézírás</option>
-                <option value="Creepster" style="font-family:'Creepster';">16. Horror</option>
-                <option value="Nabla" style="font-family:'Nabla';">17. 3D Nabla</option>
-                <option value="Lobster" style="font-family:'Lobster';">18. Lobster</option>
-                <option value="Bungee Shade" style="font-family:'Bungee Shade';">19. Bungee</option>
-                <option value="Permanent Marker" style="font-family:'Permanent Marker';">20. Filctoll</option>
-                <option value="Silkscreen" style="font-family:'Silkscreen';">21. Pixel</option>
-                <option value="UnifrakturMaguntia" style="font-family:'UnifrakturMaguntia';">22. Gótikus</option>
-                <option value="Wallpoet" style="font-family:'Wallpoet';">23. Graffiti</option>
-                <option value="Nosifer" style="font-family:'Nosifer';">24. Vérző</option>
-                <option value="Rubik Glitch" style="font-family:'Rubik Glitch';">25. Glitch</option>
-                <option value="Bangers" style="font-family:'Bangers';">26. Képregény</option>
-                <option value="Iceberg" style="font-family:'Iceberg';">27. Jéghegy</option>
-                <option value="Great Vibes" style="font-family:'Great Vibes';">28. Elegáns</option>
-                <option value="Pacifico" style="font-family:'Pacifico';">29. Pacifico</option>
-                <option value="Sacramento" style="font-family:'Sacramento';">30. Sacramento</option>
-                <option value="Codystar" style="font-family:'Codystar';">31. Csillogó</option>
-                <option value="Megrim" style="font-family:'Megrim';">32. Megrim</option>
-                <option value="Syncopate" style="font-family:'Syncopate';">33. Syncopate</option>
-                <option value="Kranky" style="font-family:'Kranky';">34. Kranky</option>
-                <option value="Ewert" style="font-family:'Ewert';">35. Ewert</option>
+                <option value="Varela Round" style="font-family:'Varela Round';">8. Varela Round</option>
+                <option value="Alegreya" style="font-family:'Alegreya';">9. Alegreya</option>
+                <option value="Roboto Serif" style="font-family:'Roboto Serif';">10. Roboto Serif</option>
+                <option value="Roboto Mono" style="font-family:'Roboto Mono';">11. Roboto Mono</option>
+                <option value="Orbitron" style="font-family:'Orbitron';">12. Orbitron (Sci-fi)</option>
+                <option value="Special Elite" style="font-family:'Special Elite';">13. Gépelés</option>
+                <option value="VT323" style="font-family:'VT323';">14. Terminal</option>
+                <option value="Press Start 2P" style="font-family:'Press Start 2P';">15. 8-Bit (Retro)</option>
+                <option value="Monoton" style="font-family:'Monoton';">16. MONOTON</option>
+                <option value="Pinyon Script" style="font-family:'Pinyon Script';">17. Pinyon (Kézírás)</option>
+                <option value="Creepster" style="font-family:'Creepster';">18. Horror</option>
+                <option value="Nabla" style="font-family:'Nabla';">19. Nabla (3D)</option>
+                <option value="Lobster" style="font-family:'Lobster';">20. Lobster</option>
+                <option value="Righteous" style="font-family:'Righteous';">21. Righteous</option>
+                <option value="Bungee Shade" style="font-family:'Bungee Shade';">22. Bungee Shade</option>
+                <option value="Faster One" style="font-family:'Faster One';">23. Faster One</option>
+                <option value="Ewert" style="font-family:'Ewert';">24. Ewert</option>
+                <option value="Vast Shadow" style="font-family:'Vast Shadow';">25. Vast Shadow</option>
+                <option value="Permanent Marker" style="font-family:'Permanent Marker';">26. Filctoll</option>
+                <option value="Sacramento" style="font-family:'Sacramento';">27. Sacramento</option>
+                <option value="Silkscreen" style="font-family:'Silkscreen';">28. Pixel Clean</option>
+                <option value="Codystar" style="font-family:'Codystar';">29. Codystar</option>
+                <option value="Megrim" style="font-family:'Megrim';">30. Megrim</option>
+                <option value="UnifrakturMaguntia" style="font-family:'UnifrakturMaguntia';">31. Gótikus</option>
+                <option value="Wallpoet" style="font-family:'Wallpoet';">32. Graffiti</option>
+                <option value="Syncopate" style="font-family:'Syncopate';">33. Techno</option>
+                <option value="Nosifer" style="font-family:'Nosifer';">34. Vérző</option>
+                <option value="Rubik Glitch" style="font-family:'Rubik Glitch';">35. Glitch</option>
+                <option value="Bangers" style="font-family:'Bangers';">36. Pop Art</option>
+                <option value="Pacifico" style="font-family:'Pacifico';">37. Pacifico</option>
+                <option value="Great Vibes" style="font-family:'Great Vibes';">38. Great Vibes</option>
+                <option value="Bruno Ace SC" style="font-family:'Bruno Ace SC';">39. Bruno Ace</option>
+                <option value="Fascinate Inline" style="font-family:'Fascinate Inline';">40. Fascinate</option>
+                <option value="Fredericka the Great" style="font-family:'Fredericka the Great';">41. Vázlatos</option>
+                <option value="Courier New" style="font-family:'Courier New';">42. Courier</option>
+                <option value="Bungee Spice" style="font-family:'Bungee Spice';">43. Spice 3D</option>
+                <option value="Shadows Into Light" style="font-family:'Shadows Into Light';">44. Shadows</option>
+                <option value="Indie Flower" style="font-family:'Indie Flower';">45. Indie Flower</option>
+                <option value="Dancing Script" style="font-family:'Dancing Script';">46. Dancing</option>
+                <option value="Caveat" style="font-family:'Caveat';">47. Caveat</option>
+                <option value="Satisfy" style="font-family:'Satisfy';">48. Satisfy</option>
+                <option value="Kaushan Script" style="font-family:'Kaushan Script';">49. Kaushan</option>
+                <option value="Yellowtail" style="font-family:'Yellowtail';">50. Yellowtail</option>
+                <option value="Courgette" style="font-family:'Courgette';">51. Courgette</option>
+                <option value="Amatic SC" style="font-family:'Amatic SC';">52. Amatic</option>
+                <option value="Bebas Neue" style="font-family:'Bebas Neue';">53. Bebas</option>
+                <option value="Abril Fatface" style="font-family:'Abril Fatface';">54. Abril</option>
+                <option value="Patua One" style="font-family:'Patua One';">55. Patua</option>
+                <option value="Fredoka One" style="font-family:'Fredoka One';">56. Fredoka</option>
+                <option value="Limelight" style="font-family:'Limelight';">57. Limelight</option>
+                <option value="Stalinist One" style="font-family:'Stalinist One';">58. Stalinist</option>
+                <option value="Black Ops One" style="font-family:'Black Ops One';">59. Black Ops</option>
+                <option value="Shojumaru" style="font-family:'Shojumaru';">60. Shojumaru</option>
+                <option value="Metal Mania" style="font-family:'Metal Mania';">61. Metal Mania</option>
+                <option value="Sancreek" style="font-family:'Sancreek';">62. Sancreek</option>
+                <option value="Rye" style="font-family:'Rye';">63. Rye</option>
+                <option value="Butcherman" style="font-family:'Butcherman';">64. Butcher</option>
+                <option value="Frijole" style="font-family:'Frijole';">65. Frijole</option>
+                <option value="Eater" style="font-family:'Eater';">66. Eater</option>
+                <option value="Aclonica" style="font-family:'Aclonica';">67. Aclonica</option>
+                <option value="Michroma" style="font-family:'Michroma';">68. Michroma</option>
+                <option value="Audiowide" style="font-family:'Audiowide';">69. Audiowide</option>
+                <option value="Quantico" style="font-family:'Quantico';">70. Quantico</option>
+                <option value="Russo One" style="font-family:'Russo One';">71. Russo</option>
+                <option value="Squada One" style="font-family:'Squada One';">72. Squada</option>
+                <option value="Allura" style="font-family:'Allura';">73. Allura</option>
+                <option value="Alex Brush" style="font-family:'Alex Brush';">74. Alex Brush</option>
+                <option value="Cookie" style="font-family:'Cookie';">75. Cookie</option>
+                <option value="Grand Hotel" style="font-family:'Grand Hotel';">76. Grand Hotel</option>
+                <option value="Parisienne" style="font-family:'Parisienne';">77. Parisienne</option>
+                <option value="Rochester" style="font-family:'Rochester';">78. Rochester</option>
+                <option value="Tangerine" style="font-family:'Tangerine';">79. Tangerine</option>
+                <option value="Zeyada" style="font-family:'Zeyada';">80. Zeyada</option>
+                <option value="Architects Daughter" style="font-family:'Architects Daughter';">81. Architects</option>
+                <option value="Covered By Your Grace" style="font-family:'Covered By Your Grace';">82. Grace</option>
+                <option value="Gloria Hallelujah" style="font-family:'Gloria Hallelujah';">83. Gloria</option>
+                <option value="Handlee" style="font-family:'Handlee';">84. Handlee</option>
+                <option value="Patrick Hand" style="font-family:'Patrick Hand';">85. Patrick</option>
+                <option value="Reenie Beanie" style="font-family:'Reenie Beanie';">86. Reenie</option>
+                <option value="Rock Salt" style="font-family:'Rock Salt';">87. Rock Salt</option>
+                <option value="Coming Soon" style="font-family:'Coming Soon';">88. Coming Soon</option>
+                <option value="Boogaloo" style="font-family:'Boogaloo';">89. Boogaloo</option>
+                <option value="Carter One" style="font-family:'Carter One';">90. Carter</option>
+                <option value="Chango" style="font-family:'Chango';">91. Chango</option>
+                <option value="Cherry Cream Soda" style="font-family:'Cherry Cream Soda';">92. Cherry</option>
+                <option value="Chewy" style="font-family:'Chewy';">93. Chewy</option>
+                <option value="Fugaz One" style="font-family:'Fugaz One';">94. Fugaz</option>
+                <option value="Luckiest Guy" style="font-family:'Luckiest Guy';">95. Luckiest</option>
+                <option value="Titan One" style="font-family:'Titan One';">96. Titan</option>
+                <option value="Yeseva One" style="font-family:'Yeseva One';">97. Yeseva</option>
+                <option value="Marcellus" style="font-family:'Marcellus';">98. Marcellus</option>
+                <option value="Cinzel" style="font-family:'Cinzel';">99. Cinzel</option>
+                <option value="Forum" style="font-family:'Forum';">100. Forum</option>
+                <option value="Cormorant Garamond" style="font-family:'Cormorant Garamond';">101. Garamond</option>
+                <option value="Iceberg" style="font-family:'Iceberg';">102. Iceberg</option>
+                <option value="Glass Antiqua" style="font-family:'Glass Antiqua';">103. Glass Antiqua</option>
+                <option value="Kranky" style="font-family:'Kranky';">104. Kranky</option>
+                <option value="Alumni Sans Inline One" style="font-family:'Alumni Sans Inline One';">105. Alumni</option>
+                <option value="Rubik Glitch" style="font-family:'Rubik Glitch';">106. Glitch 2</option>
+                <option value="Times New Roman" style="font-family:'Times New Roman';">107. Times</option>
+                <option value="Georgia" style="font-family:'Georgia';">108. Georgia</option>
+                <option value="Impact" style="font-family:'Impact';">109. Impact</option>
+                <option value="Comic Sans MS" style="font-family:'Comic Sans MS';">110. Comic Sans</option>
+                <option value="Verdana" style="font-family:'Verdana';">111. Verdana</option>
+                <option value="Trebuchet MS" style="font-family:'Trebuchet MS';">112. Trebuchet</option>
+                <option value="Garamond" style="font-family:'Garamond';">113. Garamond Old</option>
+                <option value="Bookman" style="font-family:'Bookman';">114. Bookman</option>
+                <option value="Palatino" style="font-family:'Palatino';">115. Palatino</option>
+                <option value="Candara" style="font-family:'Candara';">116. Candara</option>
+                <option value="Geneva" style="font-family:'Geneva';">117. Geneva</option>
+                <option value="Optima" style="font-family:'Optima';">118. Optima</option>
+                <option value="Tahoma" style="font-family:'Tahoma';">119. Tahoma (Vége)</option>
             </select>
             <input type="number" id="fontSize" value="25" min="8" max="100" style="width:45px" oninput="changeSize()">
         </div>
@@ -205,19 +289,15 @@ function saveImg() {
     const a = document.createElement('a'); a.download = `shot.png`; a.href = c.toDataURL(); a.click();
 }
 
-/* DISCORD INI SZÁMLÁLÓ FUNKCIÓ */
+/* DISCORD INI SZÁMLÁLÓ */
 function updateIniCounter() {
     const text = document.getElementById('textIni').value;
     const counter = document.getElementById('iniCounter');
     const len = text.length;
     counter.innerText = `Karakterek: ${len} / 4000`;
-    if(len > 3800) {
-        counter.classList.add('counter-danger');
-    } else {
-        counter.classList.remove('counter-danger');
-    }
+    if(len > 3800) counter.classList.add('counter-danger');
+    else counter.classList.remove('counter-danger');
 }
-
 function showINI() { 
     document.getElementById('iniContainer').style.display='block'; 
     updateIniCounter();
